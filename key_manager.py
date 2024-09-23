@@ -1,14 +1,13 @@
-# key_manager.py
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
-import uuid
 import time
+import uuid
 
 def generate_key_pair():
     # Generate RSA key pair
     private_key = rsa.generate_private_key(
         public_exponent=65537,
-        key_size=2048,
+        key_size=2048
     )
     public_key = private_key.public_key()
 
@@ -27,10 +26,9 @@ def generate_key_pair():
     kid = str(uuid.uuid4())
     expiry = int(time.time()) + 3600  # 1 hour from now
 
-    # Return the key information in a dictionary format
     return {
         "kid": kid,
-        "private_key": private_pem.decode('utf-8'),  # Convert bytes to string for compatibility
-        "public_key": public_pem.decode('utf-8'),  # Convert bytes to string for compatibility
+        "private_key": private_pem.decode('utf-8'),  # Decode from bytes to string
+        "public_key": public_pem.decode('utf-8'),    # Decode from bytes to string
         "expiry": expiry
     }

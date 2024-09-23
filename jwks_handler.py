@@ -1,15 +1,16 @@
-# jwks_handler.py
+from flask import jsonify
 import time
 
 def get_jwks(keys):
-    return {
-        "keys": [
-            {
-                "kty": "RSA",
-                "n": key.get('public_key_n'),
-                "e": key.get('public_key_e'),
-                "kid": key.get('kid'),  # Safely get 'kid'
-                "expiry": key.get('expiry')
-            } for key in keys if key.get('expiry', 0) > time.time()
-        ]
-    }
+    # Only return keys that are not expired
+    jwks_keys = [
+        {
+            "kty": "RSA",
+            "use": "sig",
+            "kid": key['kid'],
+            "n": key['public_key'],  # The public key in your JWKS response
+        }
+        for key in keys if key['expiry'] > time.time()  # Only return unexpired keys
+    ]
+    
+    return jsonify({"keys": jwks_keys})
